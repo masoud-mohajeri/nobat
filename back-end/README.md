@@ -1,98 +1,319 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Nobat Backend
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A clean and forward-compatible user authentication and management system built with NestJS.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Features
 
-## Description
+- **User Authentication**: Phone number-based authentication with OTP
+- **JWT Tokens**: Access tokens (30min) and refresh tokens (30 days) with rotation
+- **User Roles**: User, Provider, and Admin roles
+- **Security**: Account locking after failed attempts, password complexity requirements
+- **Rate Limiting**: Built-in rate limiting for API endpoints
+- **Caching**: Redis-based caching
+- **Database**: PostgreSQL with TypeORM
+- **API Versioning**: Versioned API endpoints (v1)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Prerequisites
 
-## Project setup
+- Node.js (v18 or higher)
+- PostgreSQL
+- Redis
+- Yarn or npm
+
+## Installation
+
+1. Clone the repository:
 
 ```bash
-$ yarn install
+git clone <repository-url>
+cd back-end
 ```
 
-## Compile and run the project
+2. Install dependencies:
 
 ```bash
-# development
-$ yarn run start
-
-# watch mode
-$ yarn run start:dev
-
-# production mode
-$ yarn run start:prod
+yarn install
 ```
 
-## Run tests
+3. Copy environment file:
 
 ```bash
-# unit tests
-$ yarn run test
-
-# e2e tests
-$ yarn run test:e2e
-
-# test coverage
-$ yarn run test:cov
+cp env.example .env
 ```
 
-## Deployment
+4. Update the `.env` file with your configuration:
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+```env
+# Database Configuration
+DB_HOST=localhost
+DB_PORT=5432
+DB_USERNAME=postgres
+DB_PASSWORD=your_password
+DB_DATABASE=nobat_db
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+# Redis Configuration
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_PASSWORD=
+REDIS_DB=0
+
+# JWT Configuration
+JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
+JWT_ACCESS_TOKEN_EXPIRES_IN=30m
+JWT_REFRESH_TOKEN_EXPIRES_IN=30d
+
+# OTP Configuration
+OTP_EXPIRES_IN=5m
+OTP_LENGTH=6
+OTP_MAX_ATTEMPTS=3
+
+# Rate Limiting
+THROTTLE_TTL=60
+THROTTLE_LIMIT=10
+
+# App Configuration
+NODE_ENV=development
+PORT=3000
+```
+
+5. Create the database:
+
+```sql
+CREATE DATABASE nobat_db;
+```
+
+6. Start the development server:
 
 ```bash
-$ yarn install -g @nestjs/mau
-$ mau deploy
+yarn start:dev
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## API Documentation
 
-## Resources
+### Authentication Endpoints
 
-Check out a few resources that may come in handy when working with NestJS:
+#### Send OTP
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+```http
+POST /api/v1/auth/send-otp
+Content-Type: application/json
 
-## Support
+{
+  "phoneNumber": "09123456789",
+  "type": "phone_verification"
+}
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+#### Verify OTP
 
-## Stay in touch
+```http
+POST /api/v1/auth/verify-otp
+Content-Type: application/json
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+{
+  "phoneNumber": "09123456789",
+  "code": "123456",
+  "type": "phone_verification"
+}
+```
+
+#### Login
+
+```http
+POST /api/v1/auth/login
+Content-Type: application/json
+
+{
+  "phoneNumber": "09123456789",
+  "password": "MyPassword123"
+}
+```
+
+Or with OTP:
+
+```http
+POST /api/v1/auth/login
+Content-Type: application/json
+
+{
+  "phoneNumber": "09123456789",
+  "otpCode": "123456"
+}
+```
+
+#### Refresh Token
+
+```http
+POST /api/v1/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "your-refresh-token"
+}
+```
+
+#### Logout
+
+```http
+POST /api/v1/auth/logout
+Authorization: Bearer your-access-token
+```
+
+### User Management Endpoints
+
+#### Complete Profile
+
+```http
+POST /api/v1/users/complete-profile
+Authorization: Bearer your-access-token
+Content-Type: application/json
+
+{
+  "firstName": "John",
+  "lastName": "Doe",
+  "birthDate": "1990-01-01",
+  "role": "user"
+}
+```
+
+#### Set Password
+
+```http
+POST /api/v1/users/set-password
+Authorization: Bearer your-access-token
+Content-Type: application/json
+
+{
+  "password": "MyPassword123"
+}
+```
+
+#### Get Profile
+
+```http
+GET /api/v1/users/profile
+Authorization: Bearer your-access-token
+```
+
+## User Flow
+
+1. **Registration**:
+   - User enters phone number
+   - System sends OTP
+   - User verifies OTP
+   - Account created with PENDING status
+
+2. **Profile Completion**:
+   - User completes profile (required)
+   - Account status changes to ACTIVE
+
+3. **Password Setup** (Optional):
+   - User can set password for future logins
+   - Password must meet complexity requirements
+
+4. **Login**:
+   - User can login with password or OTP
+   - Failed attempts lock account after 3 tries
+   - Locked accounts require OTP to unlock
+
+## Security Features
+
+- **Password Requirements**: Minimum 8 characters, at least one uppercase and one lowercase letter
+- **Account Locking**: Accounts locked after 3 failed password attempts
+- **Token Rotation**: Refresh tokens rotated on each use
+- **Rate Limiting**: API endpoints protected with rate limiting
+- **Input Validation**: All inputs validated with class-validator
+
+## Database Schema
+
+### Users Table
+
+- `id`: UUID (Primary Key)
+- `phoneNumber`: String (Unique, 11 digits)
+- `password`: String (Hashed, optional)
+- `firstName`: String (optional)
+- `lastName`: String (optional)
+- `birthDate`: Date (optional)
+- `role`: Enum (user, provider, admin)
+- `status`: Enum (pending, active, locked, inactive)
+- `failedLoginAttempts`: Number
+- `lastFailedLoginAt`: Date
+- `lastLoginAt`: Date
+- `isPhoneVerified`: Boolean
+- `phoneVerifiedAt`: Date
+- `createdAt`: Date
+- `updatedAt`: Date
+
+### Refresh Tokens Table
+
+- `id`: UUID (Primary Key)
+- `token`: String
+- `userId`: UUID (Foreign Key)
+- `replacedByToken`: String (optional)
+- `reasonRevoked`: String (optional)
+- `isRevoked`: Boolean
+- `expiresAt`: Date
+- `createdAt`: Date
+
+### OTPs Table
+
+- `id`: UUID (Primary Key)
+- `phoneNumber`: String (11 digits)
+- `code`: String
+- `type`: Enum (phone_verification, password_reset, account_unlock, login)
+- `isUsed`: Boolean
+- `attempts`: Number
+- `expiresAt`: Date
+- `createdAt`: Date
+
+## Development
+
+### Running Tests
+
+```bash
+yarn test
+```
+
+### Building for Production
+
+```bash
+yarn build
+```
+
+### Running in Production
+
+```bash
+yarn start:prod
+```
+
+## OTP Service Integration
+
+The system includes a mock OTP service for development. To integrate with a real SMS service:
+
+1. Create a new service implementing `OtpServiceInterface`
+2. Update the provider in `auth.module.ts`
+3. Configure your SMS service credentials in environment variables
+
+Example SMS service integration:
+
+```typescript
+@Injectable()
+export class TwilioOtpService implements OtpServiceInterface {
+  async sendOtp(phoneNumber: string, code: string): Promise<boolean> {
+    // Implement Twilio SMS sending logic
+    return true;
+  }
+}
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests
+5. Submit a pull request
 
 ## License
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+This project is licensed under the MIT License.
