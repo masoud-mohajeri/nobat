@@ -7,9 +7,11 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
+import { StylistsModule } from './stylists/stylists.module';
 import { User } from './users/entities/user.entity';
 import { RefreshToken } from './auth/entities/refresh-token.entity';
 import { Otp } from './auth/entities/otp.entity';
+import { StylistProfile } from './stylists/entities/stylist-profile.entity';
 
 @Module({
   imports: [
@@ -25,7 +27,7 @@ import { Otp } from './auth/entities/otp.entity';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE'),
-        entities: [User, RefreshToken, Otp],
+        entities: [User, RefreshToken, Otp, StylistProfile],
         synchronize: configService.get('NODE_ENV') === 'development',
         logging: configService.get('NODE_ENV') === 'development',
       }),
@@ -50,6 +52,7 @@ import { Otp } from './auth/entities/otp.entity';
     }),
     AuthModule,
     UsersModule,
+    StylistsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

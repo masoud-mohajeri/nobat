@@ -7,6 +7,7 @@ A clean and forward-compatible user authentication and management system built w
 - **User Authentication**: Phone number-based authentication with OTP
 - **JWT Tokens**: Access tokens (30min) and refresh tokens (30 days) with rotation
 - **User Roles**: User, Provider, and Admin roles
+- **Stylist Profile Management**: Complete stylist profile system with admin approval workflow
 - **Security**: Account locking after failed attempts, password complexity requirements
 - **Rate Limiting**: Built-in rate limiting for API endpoints
 - **Caching**: Redis-based caching
@@ -82,7 +83,17 @@ PORT=3000
 CREATE DATABASE nobat_db;
 ```
 
-6. Start the development server:
+6. Run the database setup scripts:
+
+```bash
+# Run the main database setup
+psql -d nobat_db -f scripts/setup-database.sql
+
+# Run the stylist profiles setup
+psql -d nobat_db -f scripts/setup-stylist-profiles.sql
+```
+
+7. Start the development server:
 
 ```bash
 yarn start:dev
@@ -172,7 +183,7 @@ Content-Type: application/json
   "firstName": "John",
   "lastName": "Doe",
   "birthDate": "1990-01-01",
-  "role": "user"
+  "role": "provider"
 }
 ```
 
@@ -195,6 +206,123 @@ GET /api/v1/users/profile
 Authorization: Bearer your-access-token
 ```
 
+### Stylist Profile Endpoints
+
+#### Create Stylist Profile (Provider only)
+
+```http
+POST /api/v1/stylists/profile
+Authorization: Bearer your-access-token
+Content-Type: application/json
+
+{
+  "salonAddress": "123 Main St, Tehran",
+  "latitude": 35.6892,
+  "longitude": 51.3890,
+  "instagramUsername": "stylist_john"
+}
+```
+
+#### Get Own Stylist Profile (Provider only)
+
+```http
+GET /api/v1/stylists/profile
+Authorization: Bearer your-access-token
+```
+
+#### Update Stylist Profile (Provider only)
+
+```http
+PUT /api/v1/stylists/profile
+Authorization: Bearer your-access-token
+Content-Type: application/json
+
+{
+  "salonAddress": "456 New St, Tehran",
+  "instagramUsername": "new_stylist_john"
+}
+```
+
+#### Submit Profile for Approval (Provider only)
+
+```http
+POST /api/v1/stylists/profile/submit
+Authorization: Bearer your-access-token
+```
+
+#### Delete Stylist Profile (Provider only)
+
+```http
+DELETE /api/v1/stylists/profile
+Authorization: Bearer your-access-token
+```
+
+#### Get Public Stylist Profile (No authentication required)
+
+```http
+GET /api/v1/stylists/{stylistId}/profile
+```
+
+#### Regenerate Booking Link (Provider only)
+
+```http
+POST /api/v1/stylists/profile/regenerate-link
+Authorization: Bearer your-access-token
+```
+
+### Admin Endpoints
+
+#### Get All Stylist Profiles (Admin only)
+
+```http
+GET /api/v1/stylists/admin/profiles
+Authorization: Bearer your-access-token
+```
+
+#### Get Profiles by Status (Admin only)
+
+```http
+GET /api/v1/stylists/admin/profiles/status/pending_approval
+Authorization: Bearer your-access-token
+```
+
+#### Approve/Reject Profile (Admin only)
+
+```http
+POST /api/v1/stylists/admin/profiles/{stylistId}/approve
+Authorization: Bearer your-access-token
+Content-Type: application/json
+
+{
+  "status": "approved"
+}
+```
+
+Or reject with reason:
+
+```http
+POST /api/v1/stylists/admin/profiles/{stylistId}/approve
+Authorization: Bearer your-access-token
+Content-Type: application/json
+
+{
+  "status": "rejected",
+  "rejectionReason": "Profile photo is required"
+}
+```
+
+#### Suspend Profile (Admin only)
+
+```http
+POST /api/v1/stylists/admin/profiles/{stylistId}/suspend
+Authorization: Bearer your-access-token
+Content-Type: application/json
+
+{
+  "reason": "Violation of terms of service"
+}
+```
+
 ## User Flow
 
 1. **Registration**:
@@ -211,7 +339,18 @@ Authorization: Bearer your-access-token
    - User can set password for future logins
    - Password must meet complexity requirements
 
-4. **Login**:
+4. **Stylist Profile Creation** (For Providers):
+   - Provider creates stylist profile
+   - Profile starts in DRAFT status
+   - Provider can edit profile until submission
+
+5. **Profile Approval** (For Providers):
+   - Provider submits profile for approval
+   - Profile status changes to PENDING_APPROVAL
+   - Admin reviews and approves/rejects
+   - Approved profiles become publicly visible
+
+6. **Login**:
    - User can login with password or OTP
    - Failed attempts lock account after 3 tries
    - Locked accounts require OTP to unlock
@@ -223,6 +362,7 @@ Authorization: Bearer your-access-token
 - **Token Rotation**: Refresh tokens rotated on each use
 - **Rate Limiting**: API endpoints protected with rate limiting
 - **Input Validation**: All inputs validated with class-validator
+- **Role-based Access Control**: Different endpoints require different user roles
 
 ## Database Schema
 
@@ -241,6 +381,23 @@ Authorization: Bearer your-access-token
 - `lastLoginAt`: Date
 - `isPhoneVerified`: Boolean
 - `phoneVerifiedAt`: Date
+- `createdAt`: Date
+- `updatedAt`: Date
+
+### Stylist Profiles Table
+
+- `id`: UUID (Primary Key)
+- `userId`: UUID (Foreign Key to users.id)
+- `profilePhoto`: String (File path, optional)
+- `salonAddress`: Text (optional)
+- `latitude`: Decimal (optional)
+- `longitude`: Decimal (optional)
+- `instagramUsername`: String (optional)
+- `status`: Enum (draft, pending_approval, approved, rejected, suspended)
+- `rejectionReason`: Text (optional)
+- `approvedBy`: UUID (Foreign Key to users.id, optional)
+- `approvedAt`: Date (optional)
+- `submittedForApprovalAt`: Date (optional)
 - `createdAt`: Date
 - `updatedAt`: Date
 
@@ -305,6 +462,15 @@ export class TwilioOtpService implements OtpServiceInterface {
   }
 }
 ```
+
+## File Upload Integration
+
+The stylist profile system includes a placeholder for file upload functionality. To implement actual file uploads:
+
+1. Implement the `FileUploadService` methods
+2. Configure local storage or cloud storage
+3. Add file validation and processing
+4. Update the profile photo upload endpoint
 
 ## Contributing
 
