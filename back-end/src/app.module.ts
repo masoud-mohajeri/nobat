@@ -8,10 +8,14 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { StylistsModule } from './stylists/stylists.module';
+import { BookingsModule } from './bookings/bookings.module';
 import { User } from './users/entities/user.entity';
 import { RefreshToken } from './auth/entities/refresh-token.entity';
 import { Otp } from './auth/entities/otp.entity';
 import { StylistProfile } from './stylists/entities/stylist-profile.entity';
+import { Booking } from './bookings/entities/booking.entity';
+import { StylistAvailability } from './bookings/entities/stylist-availability.entity';
+import { StylistException } from './bookings/entities/stylist-exception.entity';
 
 @Module({
   imports: [
@@ -27,7 +31,15 @@ import { StylistProfile } from './stylists/entities/stylist-profile.entity';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE'),
-        entities: [User, RefreshToken, Otp, StylistProfile],
+        entities: [
+          User,
+          RefreshToken,
+          Otp,
+          StylistProfile,
+          Booking,
+          StylistAvailability,
+          StylistException,
+        ],
         synchronize: configService.get('NODE_ENV') === 'development',
         logging: configService.get('NODE_ENV') === 'development',
       }),
@@ -53,6 +65,7 @@ import { StylistProfile } from './stylists/entities/stylist-profile.entity';
     AuthModule,
     UsersModule,
     StylistsModule,
+    BookingsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
