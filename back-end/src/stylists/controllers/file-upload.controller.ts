@@ -9,15 +9,28 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+  ApiConsumes,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
 import { FileUploadService } from '../services/file-upload.service';
 import { UploadProfilePhotoDto } from '../dto/upload-profile-photo.dto';
 
+@ApiTags('stylists')
 @Controller('api/v1/stylists')
 export class FileUploadController {
   constructor(private readonly fileUploadService: FileUploadService) {}
 
+  @ApiOperation({ summary: 'Upload profile photo' })
+  @ApiResponse({ status: 200, description: 'Photo uploaded successfully' })
+  @ApiResponse({ status: 400, description: 'No file uploaded or invalid file' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBearerAuth('JWT-auth')
   @Post('profile/photo')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('photo'))

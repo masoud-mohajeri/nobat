@@ -291,7 +291,7 @@ This document tracks all features of the Nobat Backend project, their implementa
 - [x] **Request Validation** - DTO-based validation
 - [x] **Response Formatting** - Consistent response structure
 - [x] **Error Handling** - Global exception filters
-- [ ] **API Documentation** - Swagger/OpenAPI
+- [x] **API Documentation** - Swagger/OpenAPI
 - [ ] **API Rate Limiting** - Endpoint-specific limits
 - [ ] **API Monitoring** - Request/response logging
 - [ ] **API Analytics** - Usage statistics
@@ -529,18 +529,19 @@ This document tracks all features of the Nobat Backend project, their implementa
 - ✅ **Comprehensive SMS Service** - All booking notifications in Persian
 - ✅ **24-Hour Reminder System** - Automated booking reminders
 - ✅ **Booking Validation** - Conflict prevention and availability checking
+- ✅ **API Documentation** - Complete Swagger/OpenAPI documentation
 
 ### Next Priority Features
 
 1. **Payment Integration** - Deposit payment system and payment processing
 2. **File Upload System** - Complete profile photo upload functionality
-3. **API Documentation** - Swagger/OpenAPI integration
-4. **Testing Suite** - Unit and integration tests
-5. **Real SMS Integration** - Production SMS service (Twilio/Kavenegar)
-6. **Scheduled Tasks** - Install @nestjs/schedule for automated reminders
-7. **Booking Analytics** - Track booking patterns and stylist performance
-8. **Advanced Availability** - Recurring exceptions and advanced scheduling
-9. **Email Notifications** - Email notifications alongside SMS
+3. **Testing Suite** - Unit and integration tests
+4. **Real SMS Integration** - Production SMS service (Twilio/Kavenegar)
+5. **Scheduled Tasks** - Install @nestjs/schedule for automated reminders
+6. **Booking Analytics** - Track booking patterns and stylist performance
+7. **Advanced Availability** - Recurring exceptions and advanced scheduling
+8. **Email Notifications** - Email notifications alongside SMS
+9. **API Rate Limiting** - Endpoint-specific limits and monitoring
 
 ### Technical Debt
 

@@ -6,9 +6,15 @@ import {
   Min,
   Max,
 } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class SetAvailabilityDto {
   // Daily work configuration
+  @ApiProperty({
+    description: 'Monday start time (HH:MM format)',
+    example: '09:00',
+    required: false,
+  })
   @IsOptional()
   @IsString()
   mondayStart?: string; // Format: "09:00"
@@ -66,6 +72,13 @@ export class SetAvailabilityDto {
   sundayEnd?: string;
 
   // Slot configuration
+  @ApiProperty({
+    description: 'Duration of each booking slot in minutes',
+    example: 60,
+    minimum: 15,
+    maximum: 480,
+    required: false,
+  })
   @IsOptional()
   @IsInt()
   @Min(15)
@@ -78,6 +91,13 @@ export class SetAvailabilityDto {
   @Max(120)
   bufferTimeMinutes?: number; // 0 to 2 hours
 
+  @ApiProperty({
+    description: 'Minimum notice required for booking in minutes',
+    example: 120,
+    minimum: 30,
+    maximum: 1440,
+    required: false,
+  })
   @IsOptional()
   @IsInt()
   @Min(30)
